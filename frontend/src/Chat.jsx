@@ -1,5 +1,5 @@
 import "./Chat.css";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import MyContext from "./MyContext";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
@@ -7,7 +7,21 @@ import "highlight.js/styles/github-dark.css";
 //react-markdown, rehype-highlight for formating code blocks
 
 function Chat() {
-  const { newChat, prevChats } = useContext(MyContext);
+  const { newChat, prevChats, reply } = useContext(MyContext);
+  const [latestReply, setLatestReply] = useState(null);
+
+  useEffect(() => {
+    //separate latest reply and add typing effect
+    if (!prevChats.length) return;
+    const content = reply.split(" ");
+    let index = 0;
+    const interval = setInterval(() => {
+      setLatestReply(content.slice(0, index + 1).join(" "));
+      index++;
+      if (index >= content.length) clearInterval(interval);
+    }, 50);
+    return () => clearInterval(interval);
+  }, [prevChats, reply]);
 
   return (
     <>
@@ -27,6 +41,14 @@ function Chat() {
             )}
           </div>;
         })}
+
+        {prevChats.length > 0 && (
+          <div className="gptDiv" key="typing">
+            <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+              {latestReply}
+            </ReactMarkdown>
+          </div>
+        )}
       </div>
     </>
   );
