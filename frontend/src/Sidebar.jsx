@@ -3,7 +3,7 @@ import "./Sidebar.css";
 function Sidebar() {
   return (
     <section className="sidebar">
-      {/* new chat button */}
+
       <button>
         <img className="logo" src="src/assets/blacklogo.png" alt="logo" />
         <span>
@@ -11,7 +11,7 @@ function Sidebar() {
         </span>
       </button>
 
-      {/* history */}
+
       <div className="history">
         <ul>
           <li>Thread1: Hello</li>
@@ -19,7 +19,6 @@ function Sidebar() {
         </ul>
       </div>
 
-      {/* sign */}
       <div className="sign">
         <p>Made with ❤️ by Amit Mehta</p>
       </div>
