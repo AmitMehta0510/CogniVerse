@@ -1,0 +1,54 @@
+# ==========================
+# Node.js Essentials
+# ==========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ==========================
+# Environment & Secrets
+# ==========================
+.env
+.env.local
+.env.*.local
+
+# ==========================
+# Build / Output Files
+# ==========================
+dist/
+build/
+tmp/
+temp/
+logs/
+*.log
+
+# ==========================
+# System Files
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# IDE / Editor Settings
+# ==========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ==========================
+# Mongoose / Mongo Cache
+# ==========================
+*.seed
+*.dump
+
+# ==========================
+# Optional — if you use tests or Docker later
+# ==========================
+coverage/
+.Dockerfile
+docker-compose.yml
