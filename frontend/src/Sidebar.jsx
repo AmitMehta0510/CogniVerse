@@ -1,9 +1,27 @@
 import "./Sidebar.css";
+import { useContext, useEffect } from "react";
+import { MyContext } from "./MyContext";
 
 function Sidebar() {
+  const { allThreads, setAllThreads, currThreadId } = useContext(MyContext);
+
+  const getAllThreads = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/threads");
+      const res = await response.json();
+      const filteredData = res.map((thread) => ({
+        threadId: thread.threadId,
+        title: thread.title,
+      }));
+      setAllThreads(filteredData);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    getAllThreads();
+  }, currThreadId);
+
   return (
     <section className="sidebar">
-
       <button>
         <img className="logo" src="src/assets/blacklogo.png" alt="logo" />
         <span>
@@ -11,13 +29,11 @@ function Sidebar() {
         </span>
       </button>
 
-
-      <div className="history">
-        <ul>
-          <li>Thread1: Hello</li>
-          <li>Thread2: Hi there!</li>
-        </ul>
-      </div>
+      <ul className="history">
+        {allThreads?.map((thread, idx) => (
+          <li key={idx}>{thread.title}</li>
+        ))}
+      </ul>
 
       <div className="sign">
         <p>Made with ❤️ by Amit Mehta</p>
