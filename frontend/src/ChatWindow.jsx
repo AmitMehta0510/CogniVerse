@@ -21,6 +21,7 @@ function ChatWindow() {
 
   const getreply = async () => {
     setLoading(true);
+    setNewChat(false);
     const options = {
       method: "POST",
       headers: {

@@ -4,7 +4,16 @@ import { MyContext } from "./MyContext";
 import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
-  const { allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats } = useContext(MyContext);
+  const {
+    allThreads,
+    setAllThreads,
+    currThreadId,
+    setNewChat,
+    setPrompt,
+    setReply,
+    setCurrThreadId,
+    setPrevChats,
+  } = useContext(MyContext);
 
   const getAllThreads = async () => {
     try {
@@ -29,6 +38,21 @@ function Sidebar() {
     setPrevChats([]);
   };
 
+  const changeThread = async (newThreadId) => {
+    setCurrThreadId(newThreadId);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/thread/${newThreadId}`
+      );
+      const res = await response.json();
+      setPrevChats(res);
+      setNewChat(false);
+      setReply(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <section className="sidebar">
       <button onClick={createNewChat}>
@@ -40,7 +64,9 @@ function Sidebar() {
 
       <ul className="history">
         {allThreads?.map((thread, idx) => (
-          <li key={idx}>{thread.title}</li>
+          <li key={idx} onClick={changeThread}>
+            {thread.title}
+          </li>
         ))}
       </ul>
 
