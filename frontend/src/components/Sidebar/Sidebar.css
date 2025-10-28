@@ -13,7 +13,7 @@
   gap: 10px;
   align-items: center;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -82,4 +82,36 @@
 
 .highlighted {
   background-color: rgba(180, 180, 180, 0.03);
+}
+
+/* ✅ Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem;
+  }
+
+  .history {
+    display: none; /* hide history for tablet/mobile */
+  }
+
+  .sign {
+    border-top: none;
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    flex-direction: column;
+  }
+
+  .newBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
