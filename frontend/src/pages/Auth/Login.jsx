@@ -13,18 +13,22 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsg("");
 
     try {
-      const res = await API.post("/auth/login", { email, password });
-      const data = res.data;
+      // ✅ clear old data before login
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
 
-      login(data.token, data.user);
-      navigate("/", { replace: true }); 
+      const res = await API.post("/auth/login", { email, password });
+
+      // ✅ save new session
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      toast.success(res.data.message || "Login successful!");
+      navigate("/"); // redirect to home/chatpage
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Login failed. Please try again.";
-      setMsg(message);
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 

@@ -15,28 +15,24 @@ export default function Register() {
     password: "",
 });
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-};
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await API.post("/auth/register", formData);
 
-      const { token, user } = res.data;
+      // ✅ Save token & user
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      login(token, user); // ✅ updates AuthContext + localStorage
-      toast.success("Registration successful!");
-      navigate("/", { replace: true }); // ✅ redirect to home
+      toast.success(res.data.message || "Registration successful!");
+      navigate("/"); // redirect to home immediately
     } catch (err) {
-      console.error("Register Error:", err.response?.data || err.message);
-      toast.error(err.response?.data?.message || "Registration failed!");
+      toast.error(err.response?.data?.message || "Registration failed");
     }
-};
+  };
 
   return (
     <div className="auth-container">
