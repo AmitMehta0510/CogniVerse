@@ -12,21 +12,23 @@ const generateToken = (user) => {
 // Register
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, username } = req.body;
 
-    if (!name || !email || !password)
+    if (!name || !email || !password || !username)
       return res.status(400).json({ message: "All fields are required!" });
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser)
-      return res.status(400).json({ message: "User already exists!" });
+      return res
+        .status(400)
+        .json({ message: "User with this email or username already exists!" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    // DO NOT hash here — schema pre('save') will hash once
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      username,
+      password, // raw password -> will be hashed by userSchema.pre('save')
     });
 
     // Generate JWT
@@ -37,14 +39,23 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: "User registered successfully",
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+      },
     });
   } catch (error) {
+    // If validation error, return 400 with details
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };
 
-// Login
+// Login (unchanged)
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -66,7 +77,12 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -79,7 +95,9 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user)
-      return res.status(404).json({ message: "User with this email not found" });
+      return res
+        .status(404)
+        .json({ message: "User with this email not found" });
 
     const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15m",

@@ -2,7 +2,7 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import mongoose from "mongoose";
-import chatRoutes from "./routes/chat.js";
+import chatRoutes from "./routes/chat.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
@@ -10,12 +10,12 @@ app.use(express.json());
 app.use(cors());
 const PORT = process.env.PORT || 3000;
 
-app.use("/api", chatRoutes);
+app.use("/api/chat", chatRoutes);
 app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-    connectDB();
+  connectDB();
 });
 
 const connectDB = async () => {
